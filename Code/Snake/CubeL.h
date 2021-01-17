@@ -3,11 +3,11 @@
 
 #define Edgesize 5
 #define _LED_CNT 125
-#define PTB1 1
-#define PTB2 2
-#define PTB3 3
-#define PTB4 4
-#define PTB5 5
+#define PTB1 6
+#define PTB2 7
+#define PTB3 8
+#define PTB4 9
+#define PTB5 10
 
 
 typedef struct{
@@ -36,9 +36,11 @@ void send_leds(SRGB * leds, int x);
 
 void wait(volatile uint32_t cnt);
 
+
+//effects
 void cycle_color_change( SRGB rgb_leds[] );
-
-
+void flying_strips1(void * pasek);
+void flying_strips2(void * pasek, int data[5][5][5]);
 
 
 
