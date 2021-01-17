@@ -9,14 +9,14 @@
 
 int data[5][5][5];
 
-int snake_size = 2;
+int snake_size = 3;
 int direction = 31;
 int defeat_or_win = 0;
 int win = 0;
 int lose = 0;
-int old_snake_size = 2;
+int old_snake_size = 3;
 
-enum move{MOVE_UP,MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT };
+//enum move{MOVE_UP,MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT };
 
 SRGB rgb_leds [ _LED_CNT ];
 /// pin 1 - 0.....24  - first wall
@@ -37,7 +37,6 @@ typedef struct Coordinates{
 XYZ snake[125];
 XYZ food;
 XYZ tmp;
-
 
 
 //here we create reference to data from SRGB struct for our 3D matrix data[5][5][5]
@@ -66,30 +65,33 @@ void fill_Data(void)
 //here we set our starting conditions
 void snake_start()
 {
-	snake[0].x = 0;
+	snake[0].x = 1;
 	snake[0].y = 1;
 	snake[0].z = 2;
 	
-	snake[1].x = 0;
+	snake[1].x = 1;
 	snake[1].y = 1;
 	snake[1].z = 1;
 	
-	food.x = 0;
-	food.y = 1;
-	food.z = 1;
+	snake[2].x = 1;
+	snake[2].y = 1;
+	snake[2].z = 3;
+	
+	food.x = 1;
+	food.y = 3;
+	food.z = 2;
 }
 
 //here we set where food should be
 void where_food()
 {
-	//int tmp_food = 25 - snake_size ;											//when completed 125
-	food.x =0; //rand() % 5;
+	food.x =rand() % 5;
 	food.y = rand() % 5;
 	food.z = rand() % 5;
 	
 	for(int i = 0; i < snake_size; i++){
 		if(snake[i].x == food.x){
-			food.x =0; //rand() % 5;
+			food.x =rand() % 5;
 			//where_food();
 		}
 		if(snake[i].y == food.y){
@@ -115,6 +117,156 @@ void check_food()
 		
 		where_food();
 	}
+}
+
+//we move here dependand on which direction we used earlier in loop
+void snake_control()
+{
+	//-------------------------------------------------------// when snake went along x axis
+	if(direction == 11)
+	{
+			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
+			direction = 31;
+			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
+			direction = 32;
+			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
+			direction = 21;
+			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
+			direction = 22;
+			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+	}
+	//-------------------------------------------------------//  when snake went along x axis backward
+	if(direction == 12)
+	{
+			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
+			direction = 32;
+			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
+			direction = 31;
+			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
+			direction = 21;
+			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
+			direction = 22;
+			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+	}
+	//-------------------------------------------------------//  when snake went along y axis 
+	if(direction == 21)
+	{
+			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
+			direction = 12;
+			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
+			direction = 11;
+			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
+			direction = 32;
+			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
+			direction = 31;
+			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+	}
+	//-------------------------------------------------------//  when snake went along y axis backward
+	if(direction == 22)
+	{
+			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
+			direction = 12;
+			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
+			direction = 11;
+			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
+			direction = 32;
+			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
+			direction = 31;
+			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+	}
+	//-------------------------------------------------------//  when snake went along z axis
+	if(direction == 31)
+	{
+			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
+			direction = 12;
+			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
+			direction = 11;
+			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
+			direction = 21;
+			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
+			direction = 22;
+			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+	}
+	//-------------------------------------------------------//  when snake went along z axis backward
+	if(direction == 32)
+	{
+			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
+			direction = 11;
+			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
+			direction = 12;
+			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
+			direction = 21;
+			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
+			direction = 22;
+			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
+				delay_ms(100); 
+		}
+	}
+
 }
 
 //here is how our snake should move
@@ -388,25 +540,24 @@ void win_end_game()
 	}
 }
 
+
+
 //here we show snake and food on our cube
 void display()
 {	
 	//clear_all();
-	clearAllPixels(pasek );
+	clearAllPixels( pasek );
 	for(int i=1; i <snake_size; i++)
 		{
 			setPixel(pasek,data[snake[i].x][snake[i].y][snake[i].z], 0x001f00);
 		}
-		//if(old_snake_size == snake_size)setPixel(pasek,data[tmp.x][tmp.y][tmp.z], 0x00);
-		//else old_snake_size = snake_size;
 		setPixel(pasek,data[snake[0].x][snake[0].y][snake[0].z], 0x001f1f);
 		setPixel(pasek,data[food.x][food.y][food.z], 0x1f1f00);
-	for(int j = 0; j < 5; j++)
+		for(int j = 0; j < 5; j++)
 		{
 				send_leds(pasek, j);
 		}
 }
-
 
 
 int main(void) {
@@ -415,24 +566,33 @@ InitializeCube();
 buttonsInitialize();
 fill_Data();
 	
-clearwall(0);	
+clear_all();		
 wait(5000);
 
-win =1 ;
 
 
 snake_start();
 
 	while(!defeat_or_win)
 	{	
-		snake_move();
+		
+		snake_move(); 
+		snake_control();
 		check_food();
 		display();
 		check_when_lose_or_win();
 		delay_ms(1000);
 	}
 
-//lose_end_game();
-//win_end_game();
+
+lose_end_game();
+win_end_game();
+
+//////fun effects///////
+//cycle_color_change(	rgb_leds);
+//flying_strips1( pasek);
+//flying_strips2( pasek, data);
+
+
 }
 
