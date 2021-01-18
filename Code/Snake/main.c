@@ -8,7 +8,6 @@
 
 
 int data[5][5][5];
-
 int snake_size = 3;
 int direction = 31;
 int defeat_or_win = 0;
@@ -16,7 +15,10 @@ int win = 0;
 int lose = 0;
 int old_snake_size = 3;
 
-//enum move{MOVE_UP,MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT };
+volatile int flag1 = 0;
+volatile int flag2 = 0;
+volatile int flag3 = 0;
+volatile int flag4 = 0;
 
 SRGB rgb_leds [ _LED_CNT ];
 /// pin 1 - 0.....24  - first wall
@@ -62,6 +64,7 @@ void fill_Data(void)
 	}
 }
 
+
 //here we set our starting conditions
 void snake_start()
 {
@@ -81,6 +84,7 @@ void snake_start()
 	food.y = 3;
 	food.z = 2;
 }
+
 
 //here we set where food should be
 void where_food()
@@ -105,6 +109,7 @@ void where_food()
 	}
 }
 
+
 //here we check if he ate food and if yes we make him bigger
 void check_food()
 {
@@ -114,160 +119,134 @@ void check_food()
 		snake[old_snake_size].x = tmp.x;
 		snake[old_snake_size].y = tmp.y;
 		snake[old_snake_size].z = tmp.z;
-		
 		where_food();
 	}
 }
 
+
 //we move here dependand on which direction we used earlier in loop
 void snake_control()
 {
-	//-------------------------------------------------------// when snake went along x axis
-	if(direction == 11)
+	// turn right on XZ plane
+	if(flag1)
 	{
-			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
-			direction = 31;
-			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
-				delay_ms(100); 
+		
+		if(direction == 11)
+		{
+				direction = 32;
+		}	
+		else if(direction == 12)
+		{
+				direction = 31;
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
-			direction = 32;
-			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
-				delay_ms(100); 
+		else if(direction == 21)
+		{
+				direction = 32;
+		}	
+		else if(direction == 22)
+		{
+				direction = 31;
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
-			direction = 21;
-			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
-				delay_ms(100); 
+		else if(direction == 31) 
+		{
+				direction = 11;
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
-			direction = 22;
-			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
-				delay_ms(100); 
+		else if(direction == 32)
+		{
+				direction = 12;
 		}
+		
+		flag1=0;
 	}
-	//-------------------------------------------------------//  when snake went along x axis backward
-	if(direction == 12)
+	// turn left on XZ plane
+	else if(flag2)
 	{
-			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
-			direction = 32;
-			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
-				delay_ms(100); 
+		if(direction == 11)
+		{
+				direction = 31;
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
-			direction = 31;
-			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
-				delay_ms(100); 
+		else if(direction == 12)
+		{
+				direction = 32;
+		}	
+		else if(direction == 21)
+		{
+				direction = 32;
+		}	
+		else if(direction == 22)
+		{
+				direction = 31;
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
-			direction = 21;
-			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
-				delay_ms(100); 
+		else if(direction == 31) //start dir
+		{
+				direction = 12;
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
-			direction = 22;
-			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
-				delay_ms(100); 
+		else if(direction == 32)
+		{
+				direction = 11;
 		}
+		flag2=0;
 	}
-	//-------------------------------------------------------//  when snake went along y axis 
-	if(direction == 21)
+	// turn up
+	else if(flag3)
 	{
-			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
-			direction = 12;
-			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
-				delay_ms(100); 
+		if(direction == 11)
+		{
+				direction = 21;
+		}	
+		else if(direction == 12)
+		{
+				direction = 21;
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
-			direction = 11;
-			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
-				delay_ms(100); 
+		else if(direction == 21)   
+		{
+				direction = 21;						
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
-			direction = 32;
-			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
-				delay_ms(100); 
+		else if(direction == 22)
+		{
+				direction = 21;          
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
-			direction = 31;
-			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
+		else if(direction == 31)
+		{
+				direction = 21;
+		}	
+		else if(direction == 32)
+		{
+				direction = 21;
+		}		
+		flag3=0;
 	}
-	//-------------------------------------------------------//  when snake went along y axis backward
-	if(direction == 22)
+	// turn down
+	else if(flag4)
 	{
-			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
-			direction = 12;
-			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
-				delay_ms(100); 
+		if(direction == 11)
+		{
+				direction = 22;
+		}	
+		else if(direction == 12)
+		{
+				direction = 22;
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
-			direction = 11;
-			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
-				delay_ms(100); 
+		else if(direction == 21)
+		{
+				direction = 22;
+		}	
+		else if(direction == 22)
+		{
+				direction = 21;
 		}
-		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
-			direction = 32;
-			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
-		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
-			direction = 31;
-			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
+		else if(direction == 31)
+		{
+				direction = 22;
+		}	
+		else if(direction == 32)
+		{
+				direction = 22;
+		}		
+		flag4=0;
 	}
-	//-------------------------------------------------------//  when snake went along z axis
-	if(direction == 31)
-	{
-			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
-			direction = 12;
-			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
-		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
-			direction = 11;
-			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
-		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
-			direction = 21;
-			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
-		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
-			direction = 22;
-			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
-	}
-	//-------------------------------------------------------//  when snake went along z axis backward
-	if(direction == 32)
-	{
-			if( ( PTB->PDIR & (1<<BUTTON_1_POS) ) ==0 ){ 
-			direction = 11;
-			while( ( PTB->PDIR & (1<<BUTTON_1_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
-		if( ( PTB->PDIR & (1<<BUTTON_2_POS) ) ==0 ){ 
-			direction = 12;
-			while( ( PTB->PDIR & (1<<BUTTON_2_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
-		if( ( PTB->PDIR & (1<<BUTTON_3_POS) ) ==0 ){ 
-			direction = 21;
-			while( ( PTB->PDIR & (1<<BUTTON_3_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
-		if( ( PTB->PDIR & (1<<BUTTON_4_POS) ) ==0 ){ 
-			direction = 22;
-			while( ( PTB->PDIR & (1<<BUTTON_4_POS) ) == 0 ) 
-				delay_ms(100); 
-		}
-	}
-
 }
+
 
 //here is how our snake should move
 void snake_move()
@@ -294,7 +273,7 @@ void snake_move()
 		}
 		snake[0].x--;
 		
-		if(snake[0].x == Edgesize ) snake[0].x = 0;
+		if(snake[0].x == -1 ) snake[0].x = 4;
 	}
 	
 	if(direction == 21)
@@ -318,7 +297,7 @@ void snake_move()
 		}
 		snake[0].y--;
 		
-		if(snake[0].y == Edgesize ) snake[0].y = 0;
+		if(snake[0].y == -1 ) snake[0].y = 4;
 	}
 	
 	if(direction == 31)
@@ -342,11 +321,10 @@ void snake_move()
 		}
 		snake[0].z--;
 		
-		if(snake[0].z == Edgesize ) snake[0].z = 0;
+		if(snake[0].z == -1 ) snake[0].z = 4;
 	}
-	
-	
 }
+
 
 //here we check if game ended
 void check_when_lose_or_win()
@@ -362,106 +340,107 @@ void check_when_lose_or_win()
 	if (snake_size == 120) win++;		
 }
 
+
 //here we show word "lose" when somebody lose the game
 void lose_end_game()
 {
 	if(lose == 1)
 	{
 		//1 we show letter here
-		setPixel(pasek,data[0][4][1], 0xFF0000);
-		setPixel(pasek,data[0][3][1], 0xFF0000);
-		setPixel(pasek,data[0][2][1], 0xFF0000);
-		setPixel(pasek,data[0][1][1], 0xFF0000);
-		setPixel(pasek,data[0][0][1], 0xFF0000);
-		setPixel(pasek,data[0][0][2], 0xFF0000);
-		setPixel(pasek,data[0][0][3], 0xFF0000);
-		setPixel(pasek,data[0][0][4], 0xFF0000);
+		setPixel(pasek,data[4][4][1], 0xFF0000);
+		setPixel(pasek,data[4][3][1], 0xFF0000);
+		setPixel(pasek,data[4][2][1], 0xFF0000);
+		setPixel(pasek,data[4][1][1], 0xFF0000);
+		setPixel(pasek,data[4][0][1], 0xFF0000);
+		setPixel(pasek,data[4][0][2], 0xFF0000);
+		setPixel(pasek,data[4][0][3], 0xFF0000);
+		setPixel(pasek,data[4][0][4], 0xFF0000);
 		send_leds(pasek, 0);
 		delay_ms(4000);
 		//~1 and we clear letter here
-		setPixel(pasek,data[0][4][1], 0x0000);
-		setPixel(pasek,data[0][3][1], 0x0000);
-		setPixel(pasek,data[0][2][1], 0x0000);
-		setPixel(pasek,data[0][1][1], 0x0000);
-		setPixel(pasek,data[0][0][1], 0x0000);
-		setPixel(pasek,data[0][0][2], 0x0000);
-		setPixel(pasek,data[0][0][3], 0x0000);
-		setPixel(pasek,data[0][0][4], 0x0000);
+		setPixel(pasek,data[4][4][1], 0x0000);
+		setPixel(pasek,data[4][3][1], 0x0000);
+		setPixel(pasek,data[4][2][1], 0x0000);
+		setPixel(pasek,data[4][1][1], 0x0000);
+		setPixel(pasek,data[4][0][1], 0x0000);
+		setPixel(pasek,data[4][0][2], 0x0000);
+		setPixel(pasek,data[4][0][3], 0x0000);
+		setPixel(pasek,data[4][0][4], 0x0000);
 		send_leds(pasek, 0);
 		delay_ms(500);
 		//2
-		setPixel(pasek,data[0][4][1], 0xFF0000);
-		setPixel(pasek,data[0][3][1], 0xFF0000);
-		setPixel(pasek,data[0][2][1], 0xFF0000);
-		setPixel(pasek,data[0][1][1], 0xFF0000);
-		setPixel(pasek,data[0][0][1], 0xFF0000);
-		setPixel(pasek,data[0][4][3], 0xFF0000);
-		setPixel(pasek,data[0][3][3], 0xFF0000);
-		setPixel(pasek,data[0][2][3], 0xFF0000);
-		setPixel(pasek,data[0][1][3], 0xFF0000);
-		setPixel(pasek,data[0][0][3], 0xFF0000);
-		setPixel(pasek,data[0][0][2], 0xFF0000);
-		setPixel(pasek,data[0][4][2], 0xFF0000);
+		setPixel(pasek,data[4][4][1], 0xFF0000);
+		setPixel(pasek,data[4][3][1], 0xFF0000);
+		setPixel(pasek,data[4][2][1], 0xFF0000);
+		setPixel(pasek,data[4][1][1], 0xFF0000);
+		setPixel(pasek,data[4][0][1], 0xFF0000);
+		setPixel(pasek,data[4][4][3], 0xFF0000);
+		setPixel(pasek,data[4][3][3], 0xFF0000);
+		setPixel(pasek,data[4][2][3], 0xFF0000);
+		setPixel(pasek,data[4][1][3], 0xFF0000);
+		setPixel(pasek,data[4][0][3], 0xFF0000);
+		setPixel(pasek,data[4][0][2], 0xFF0000);
+		setPixel(pasek,data[4][4][2], 0xFF0000);
 		send_leds(pasek, 0);
 		delay_ms(4000);
 		//~2
-		setPixel(pasek,data[0][4][1], 0x0000);
-		setPixel(pasek,data[0][3][1], 0x0000);
-		setPixel(pasek,data[0][2][1], 0x0000);
-		setPixel(pasek,data[0][1][1], 0x0000);
-		setPixel(pasek,data[0][0][1], 0x0000);
-		setPixel(pasek,data[0][4][3], 0x0000);
-		setPixel(pasek,data[0][3][3], 0x0000);
-		setPixel(pasek,data[0][2][3], 0x0000);
-		setPixel(pasek,data[0][1][3], 0x0000);
-		setPixel(pasek,data[0][0][3], 0x0000);
-		setPixel(pasek,data[0][0][2], 0x0000);
-		setPixel(pasek,data[0][4][2], 0x0000);
+		setPixel(pasek,data[4][4][1], 0x0000);
+		setPixel(pasek,data[4][3][1], 0x0000);
+		setPixel(pasek,data[4][2][1], 0x0000);
+		setPixel(pasek,data[4][1][1], 0x0000);
+		setPixel(pasek,data[4][0][1], 0x0000);
+		setPixel(pasek,data[4][4][3], 0x0000);
+		setPixel(pasek,data[4][3][3], 0x0000);
+		setPixel(pasek,data[4][2][3], 0x0000);
+		setPixel(pasek,data[4][1][3], 0x0000);
+		setPixel(pasek,data[4][0][3], 0x0000);
+		setPixel(pasek,data[4][0][2], 0x0000);
+		setPixel(pasek,data[4][4][2], 0x0000);
 		send_leds(pasek, 0);
 		delay_ms(500);
 		//3
-		setPixel(pasek,data[0][4][1], 0xFF0000);
-		setPixel(pasek,data[0][4][2], 0xFF0000);
-		setPixel(pasek,data[0][4][3], 0xFF0000);
-		setPixel(pasek,data[0][4][3], 0xFF0000);
-		setPixel(pasek,data[0][3][1], 0xFF0000);
-		setPixel(pasek,data[0][2][1], 0xFF0000);
-		setPixel(pasek,data[0][2][2], 0xFF0000);
-		setPixel(pasek,data[0][2][3], 0xFF0000);
-		setPixel(pasek,data[0][1][3], 0xFF0000);
-		setPixel(pasek,data[0][0][3], 0xFF0000);
-		setPixel(pasek,data[0][0][2], 0xFF0000);
-		setPixel(pasek,data[0][0][1], 0xFF0000);
+		setPixel(pasek,data[4][4][1], 0xFF0000);
+		setPixel(pasek,data[4][4][2], 0xFF0000);
+		setPixel(pasek,data[4][4][3], 0xFF0000);
+		setPixel(pasek,data[4][4][3], 0xFF0000);
+		setPixel(pasek,data[4][3][1], 0xFF0000);
+		setPixel(pasek,data[4][2][1], 0xFF0000);
+		setPixel(pasek,data[4][2][2], 0xFF0000);
+		setPixel(pasek,data[4][2][3], 0xFF0000);
+		setPixel(pasek,data[4][1][3], 0xFF0000);
+		setPixel(pasek,data[4][0][3], 0xFF0000);
+		setPixel(pasek,data[4][0][2], 0xFF0000);
+		setPixel(pasek,data[4][0][1], 0xFF0000);
 		send_leds(pasek, 0);
 		delay_ms(4000);
 		//~3
-		setPixel(pasek,data[0][4][1], 0x0000);
-		setPixel(pasek,data[0][4][2], 0x0000);
-		setPixel(pasek,data[0][4][3], 0x0000);
-		setPixel(pasek,data[0][4][3], 0x0000);
-		setPixel(pasek,data[0][3][1], 0x0000);
-		setPixel(pasek,data[0][2][1], 0x0000);
-		setPixel(pasek,data[0][2][2], 0x0000);
-		setPixel(pasek,data[0][2][3], 0x0000);
-		setPixel(pasek,data[0][1][3], 0x0000);
-		setPixel(pasek,data[0][0][3], 0x0000);
-		setPixel(pasek,data[0][0][2], 0x0000);
-		setPixel(pasek,data[0][0][1], 0x0000);
+		setPixel(pasek,data[4][4][1], 0x0000);
+		setPixel(pasek,data[4][4][2], 0x0000);
+		setPixel(pasek,data[4][4][3], 0x0000);
+		setPixel(pasek,data[4][4][3], 0x0000);
+		setPixel(pasek,data[4][3][1], 0x0000);
+		setPixel(pasek,data[4][2][1], 0x0000);
+		setPixel(pasek,data[4][2][2], 0x0000);
+		setPixel(pasek,data[4][2][3], 0x0000);
+		setPixel(pasek,data[4][1][3], 0x0000);
+		setPixel(pasek,data[4][0][3], 0x0000);
+		setPixel(pasek,data[4][0][2], 0x0000);
+		setPixel(pasek,data[4][0][1], 0x0000);
 		send_leds(pasek, 0);
 		delay_ms(500);
 		//4
-		setPixel(pasek,data[0][4][1], 0xFF0000);
-		setPixel(pasek,data[0][4][2], 0xFF0000);
-		setPixel(pasek,data[0][4][3], 0xFF0000);
-		setPixel(pasek,data[0][4][3], 0xFF0000);
-		setPixel(pasek,data[0][3][1], 0xFF0000);
-		setPixel(pasek,data[0][2][1], 0xFF0000);
-		setPixel(pasek,data[0][2][2], 0xFF0000);
-		setPixel(pasek,data[0][2][3], 0xFF0000);
-		setPixel(pasek,data[0][1][1], 0xFF0000);
-		setPixel(pasek,data[0][0][3], 0xFF0000);
-		setPixel(pasek,data[0][0][2], 0xFF0000);
-		setPixel(pasek,data[0][0][1], 0xFF0000);
+		setPixel(pasek,data[4][4][1], 0xFF0000);
+		setPixel(pasek,data[4][4][2], 0xFF0000);
+		setPixel(pasek,data[4][4][3], 0xFF0000);
+		setPixel(pasek,data[4][4][3], 0xFF0000);
+		setPixel(pasek,data[4][3][1], 0xFF0000);
+		setPixel(pasek,data[4][2][1], 0xFF0000);
+		setPixel(pasek,data[4][2][2], 0xFF0000);
+		setPixel(pasek,data[4][2][3], 0xFF0000);
+		setPixel(pasek,data[4][1][1], 0xFF0000);
+		setPixel(pasek,data[4][0][3], 0xFF0000);
+		setPixel(pasek,data[4][0][2], 0xFF0000);
+		setPixel(pasek,data[4][0][1], 0xFF0000);
 		send_leds(pasek, 0);
 		delay_ms(2000);
 	}
@@ -541,7 +520,6 @@ void win_end_game()
 }
 
 
-
 //here we show snake and food on our cube
 void display()
 {	
@@ -560,6 +538,36 @@ void display()
 }
 
 
+
+void PORTB_IRQHandler(void)
+{
+	//clear pending interrupts
+	NVIC_ClearPendingIRQ(PORTB_IRQn);
+	
+  if((PORTB->ISFR & (1<<BUTTON_1_POS))){
+		flag1 = 1;	}
+	
+		PORTB->PCR[BUTTON_1_POS] |= PORT_PCR_IRQC_MASK;
+		
+	 if((PORTB->ISFR & (1<<BUTTON_2_POS))){
+		flag2 = 1;	}
+	 PORTB->PCR[BUTTON_2_POS] |= PORT_PCR_IRQC_MASK;
+		
+	 if((PORTB->ISFR & (1<<BUTTON_3_POS))){
+		flag3 = 1;	}
+	 PORTB->PCR[BUTTON_3_POS] |= PORT_PCR_IRQC_MASK;
+		
+	 if((PORTB->ISFR & (1<<BUTTON_4_POS))){
+		flag4 = 1;	}
+		PORTB->PCR[BUTTON_4_POS] |= PORT_PCR_IRQC_MASK;
+		
+	
+	//we use this to clear status flag
+	PORTB->ISFR = 0xffffffff;
+	
+}
+
+//main loop
 int main(void) {
 
 InitializeCube();
@@ -568,8 +576,6 @@ fill_Data();
 	
 clear_all();		
 wait(5000);
-
-
 
 snake_start();
 
@@ -581,17 +587,13 @@ snake_start();
 		check_food();
 		display();
 		check_when_lose_or_win();
-		delay_ms(1000);
+		delay_ms(2000);
 	}
 
 
 lose_end_game();
 win_end_game();
 
-//////fun effects///////
-//cycle_color_change(	rgb_leds);
-//flying_strips1( pasek);
-//flying_strips2( pasek, data);
 
 
 }
