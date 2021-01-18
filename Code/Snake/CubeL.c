@@ -265,25 +265,47 @@ while(1){
  }
 }
 
-	
-void flying_strips2(void * pasek, int data[5][5][5])
+void flying_strips2(void * pasek)
 {
-	//int x,y,z;
+while(1){
+	for(int i = 0; i < 125; i++)
+	{
+	
+	create_line( pasek, i, 5, 0x0f0f00);
+	setPixel(pasek, i, 0x000000);
+	create_line( pasek, 121 -i, 5, 0x000f0f);
+	setPixel(pasek, 125-i, 0x000000);
+		for(int j = 0; j < 5; j++)
+		{
+			send_leds(pasek, j);
+		}
+	delay_ms(50);
+	}
+ }
+}
+
+	
+void flying_strips3(void * pasek, int data[5][5][5])
+{
 	
 	while(1){
-		//for( int i=0; i < 4; i++)
-		//{
+		
 		//1
 			for( int y=0; y < 5; y++)
 			{
+				uint8_t y1 = 1;
+				uint8_t y2 = 2;
+				
 				//1 strip 
-				setPixel(pasek, data[0][0][4-y], 0x000000);
-				if(y==4) setPixel(pasek, data[0][y-4][0], 0x000000);
-				setPixel(pasek, data[0][y][0], 0x0f0f00);
-				//5 strip 
-				setPixel(pasek, data[4][0][4-y], 0x000000);
-				if(y==4) setPixel(pasek, data[4][y-4][0], 0x000000);
-				setPixel(pasek, data[4][y][0], 0x0f0f00);
+					setPixel(pasek, data[0][0][4-y], 0x000000);
+					if(y==4) setPixel(pasek, data[0][y-4][0], 0x000000);
+					setPixel(pasek, data[0][y][0], 0x0f0f00);
+					//5 strip 
+					setPixel(pasek, data[4][0][4-y], 0x000000);
+					if(y==4) setPixel(pasek, data[4][y-4][0], 0x000000);
+					setPixel(pasek, data[4][y][0], 0x0f0f00);
+				
+				
 				//4 strip 
 				setPixel(pasek, data[3][0][4-y], 0x000000);
 				if(y==4) setPixel(pasek, data[3][y-4][0], 0x000000);
@@ -292,6 +314,7 @@ void flying_strips2(void * pasek, int data[5][5][5])
 				setPixel(pasek, data[1][0][4-y], 0x000000);
 				if(y==4) setPixel(pasek, data[1][y-4][0], 0x000000);
 				setPixel(pasek, data[1][y][0], 0x00000f);
+				
 				//3 strip 
 				setPixel(pasek, data[2][0][4-y], 0x000000);
 				if(y==4) setPixel(pasek, data[2][y-4][0], 0x000000);
@@ -399,18 +422,8 @@ void flying_strips2(void * pasek, int data[5][5][5])
 				send_leds(pasek, 4);
 				delay_ms(500);
 			}
-			
-		//}
-		
 	}
 }
-
-
-
-
-
-
-
 
 
 
