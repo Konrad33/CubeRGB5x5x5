@@ -21,6 +21,7 @@ void InitializeCube()
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //***********here i have functions which send bits 0 and 1 to LEDS*************//
+//***********amount of leds we use here depends on which type od diode we use(used here WS2811)*******//
 static void set1(int x)
 {
 	PTB->PDOR |= (1 << pins[x]);
@@ -36,8 +37,8 @@ static void set1(int x)
 static void set0(int x)
 {
 	PTB->PDOR |= (1 << pins[x]);
-	__asm volatile ("nop");__asm volatile ("nop");__asm volatile ("nop");__asm volatile ("nop");__asm volatile ("nop");__asm volatile ("nop");
-	__asm volatile ("nop");__asm volatile ("nop");
+	__asm("nop");__asm("nop");__asm("nop");__asm("nop");__asm("nop");__asm("nop");
+	__asm("nop");__asm("nop");
 	PTB->PDOR&= ~(1 << pins[x]);
 }
 //////////////////////////////////////////////////////////////////////////////////////////
