@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////
 
 #include "MKL05Z4.h"                    //Device header
-#include "CubeL.h"												//Declaration
+#include "CubeL.h"												
 
 
 
@@ -21,7 +21,7 @@ void InitializeCube()
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //***********here i have functions which send bits 0 and 1 to LEDS*************//
-//***********amount of leds we use here depends on which type od diode we use(used here WS2811)*******//
+//***********amount of nopes we use here depends on which type od diode we use (here we use WS2811)*******//
 static void set1(int x)
 {
 	PTB->PDOR |= (1 << pins[x]);
@@ -109,13 +109,16 @@ void sendcolor(uint32_t c, int x )
 	if(b & 1) set1(x); else set0(x);
 }
 
-//// send bit 0 to all leds
+//// send bit 0 to all leds on the wall
 void clearwall(int x)
 {
 	
 	for(int i = 0; i <24*25 ; i++) set0(x);
 	
 }
+
+
+//// send bit 0 to all leds on all walls
 void clear_all(void)
 {
 for(int j=0; j<5; j++){
@@ -124,7 +127,7 @@ for(int j=0; j<5; j++){
 
 }
 
-//// send bit 1 to all leds
+//// send bit 1 to all leds on the wall
 void lightupwall(int x)
 {
 	
@@ -166,7 +169,6 @@ void create_line(void * line, int len_start, uint16_t len, uint32_t color)
 
 
 //here we send to our cube what is written in our memory
-
 void send_leds(SRGB * leds, int x)
 {
 	uint8_t i;
@@ -217,14 +219,13 @@ void send_leds(SRGB * leds, int x)
 
 /////////////////////////////////////////////////////////////////////////
 // in this function i change between red, green and blue color in the same pattern periodically
-
 void cycle_color_change(	SRGB rgb_leds[] )
 {
 	uint16_t i, k=0;	
 	//uint8_t *wsk = (uint8_t*)&rgb_leds;
 
-	uint16_t howmanyleds = 125 ;                          //here i sets how many led i want to use
-	memset(&rgb_leds,0, 125*3 );										//we must clear all before we begin because when we don't use all leds, leds which are not used can be lgihtened up in diffrent colours
+	uint16_t howmanyleds = 125 ;                    //here i sets how many led i want to use
+	memset(&rgb_leds,0, 125*3 );			//we must clear all before we begin because when we don't use all leds, leds which are not used can be lit up in diffrent colours
 	while(1)
 	{
 		for(int j=0; j<5; j++)
@@ -266,6 +267,7 @@ while(1){
  }
 }
 
+
 void flying_strips2(void * pasek)
 {
 while(1){
@@ -285,7 +287,7 @@ while(1){
  }
 }
 
-	
+
 void flying_strips3(void * pasek, int data[5][5][5])
 {
 	
