@@ -218,6 +218,9 @@ void send_leds(SRGB * leds, int x)
 
 
 /////////////////////////////////////////////////////////////////////////
+//here we have diffrent functions which show eye-catching effects
+
+
 // in this function i change between red, green and blue color in the same pattern periodically
 void cycle_color_change(	SRGB rgb_leds[] )
 {
@@ -247,7 +250,7 @@ void cycle_color_change(	SRGB rgb_leds[] )
 
 }
 
-////////////////////////////////////////////////////////////////////////////
+
 
 
 void flying_strips1(void * pasek)
