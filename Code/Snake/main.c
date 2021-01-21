@@ -8,14 +8,15 @@
 
 
 int data[5][5][5];
-int snake_size = 3;
+int snake_size = 3;		//here we write current size of the snake
+int old_snake_size = 3;		// here we write size of the snake before eating fruit
 int direction = 31;
 int defeat_or_win = 0;
 int win = 0;
 int lose = 0;
-int old_snake_size = 3;
 
-volatile int flag1 = 0;
+
+volatile int flag1 = 0;  //variables which are used to control direction of the snake
 volatile int flag2 = 0;
 volatile int flag3 = 0;
 volatile int flag4 = 0;
@@ -86,7 +87,7 @@ void snake_start()
 }
 
 
-//here we set where food should be
+//here we draw where food should appear
 void where_food()
 {
 	food.x =rand() % 5;
@@ -110,7 +111,7 @@ void where_food()
 }
 
 
-//here we check if he ate food and if yes we make him bigger
+//here we check if snake ate food and if yes we make him bigger
 void check_food()
 {
 	if((snake[0].x == food.x) && (snake[0].y == food.y) && (snake[0].z == food.z)){
@@ -124,7 +125,7 @@ void check_food()
 }
 
 
-//we move here dependand on which direction we used earlier in loop
+//we move here dependent on which direction we used earlier in loop
 void snake_control()
 {
 	// turn right on XZ plane
@@ -187,7 +188,7 @@ void snake_control()
 		}
 		flag2=0;
 	}
-	// turn up
+	// go up
 	else if(flag3)
 	{
 		if(direction == 11)
@@ -216,7 +217,7 @@ void snake_control()
 		}		
 		flag3=0;
 	}
-	// turn down
+	// go down
 	else if(flag4)
 	{
 		if(direction == 11)
@@ -248,7 +249,7 @@ void snake_control()
 }
 
 
-//here is how our snake should move
+//here is described how snake is moving in given direction
 void snake_move()
 {
 	
@@ -341,7 +342,7 @@ void check_when_lose_or_win()
 }
 
 
-//here we show word "lose" when somebody lose the game
+//here we show word "lose" when somebody loses the game
 void lose_end_game()
 {
 	if(lose == 1)
@@ -538,7 +539,7 @@ void display()
 }
 
 
-
+// this function sets flag when we receive interrupt from the keyboard
 void PORTB_IRQHandler(void)
 {
 	//clear pending interrupts
@@ -569,17 +570,21 @@ void PORTB_IRQHandler(void)
 
 //main loop
 int main(void) {
-
+	
+//here we prepare things necessary for our project 
 InitializeCube();
 buttonsInitialize();
 fill_Data();
-	
+
+// we use this to turn off the leds which were lit from old program
 clear_all();		
 wait(5000);
 
+//this function light up leds where snake starts and where food is placed
 snake_start();
 
-	while(!defeat_or_win)
+// here we have loop where our game takes place
+while(!defeat_or_win)
 	{	
 		
 		snake_move(); 
@@ -589,8 +594,8 @@ snake_start();
 		check_when_lose_or_win();
 		delay_ms(2000);
 	}
-
-
+	
+//here we check how game ends
 lose_end_game();
 win_end_game();
 
