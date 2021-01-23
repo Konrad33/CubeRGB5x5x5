@@ -338,7 +338,7 @@ void check_when_lose_or_win()
 			lose++;
 		}
 	}
-	if (snake_size == 120) win++;		
+	if (snake_size == 80) win++;		
 }
 
 
